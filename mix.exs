@@ -30,7 +30,11 @@ defmodule SpringConfig.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, "~> 0.18", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.18", only: :dev, runtime: false},
+      {:poison, "~> 3.1"},
+      {:pattern_tap, "~> 0.4"},
+      {:httpoison, "~> 1.4"},
+      {:yaml_elixir, "~> 2.1.0"}
     ]
   end
 
