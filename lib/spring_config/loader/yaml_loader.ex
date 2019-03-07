@@ -3,13 +3,16 @@ defmodule SpringConfig.Loader.YamlLoader do
     Loads configuration from a local Yaml file in the priv directory
   """
 
-  alias Spring.Loader.LoaderBehaviour
+  alias SpringConfig.Loader.LoaderBehaviour
 
   @behaviour LoaderBehaviour
 
   @impl LoaderBehaviour
   def load(opts) when is_list(opts) do
-    check_path(opts) |> read(opts) |> filter_docs(opts) |> push_into_ets(opts)
+    check_path(opts)
+    |> read(opts)
+    |> filter_docs(opts)
+    |> push_into_ets(opts)
   end
 
   defp check_path(opts) do

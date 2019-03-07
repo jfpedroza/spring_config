@@ -5,7 +5,7 @@ defmodule SpringConfig do
 
   use PatternTap
 
-  @default_opts [ensure_started: true]
+  @default_opts []
 
   def get(key, default \\ nil, opts \\ []) when is_atom(key) do
     opts = Keyword.merge(@default_opts, opts)
