@@ -5,8 +5,14 @@ defmodule SpringConfig.Loader do
   alias SpringConfig.Loader.YamlLoader
   alias SpringConfig.Loader.RemoteJsonLoader
 
+  @ets_table :spring_config
+
+  @spec load() :: :ok
+  @doc """
+  Loads the configuration from local and remote sources. Raises if an error occurs.
+  """
   def load() do
-    :ets.new(:spring_config, [:set, :protected, :named_table])
+    :ets.new(@ets_table, [:set, :protected, :named_table])
 
     otp_app = fetch_config(:otp_app, true, as: :atom)
     path = fetch_config(:path, false, default: "priv/application.yml")
@@ -22,7 +28,7 @@ defmodule SpringConfig.Loader do
       app: otp_app,
       path: path,
       profile: profile,
-      ets_table: :spring_config
+      ets_table: @ets_table
     )
 
     remote_uri_key =
@@ -35,8 +41,10 @@ defmodule SpringConfig.Loader do
       host: remote_uri,
       app_name: app_name,
       profile: profile,
-      ets_table: :spring_config
+      ets_table: @ets_table
     )
+
+    :ok
   end
 
   defp fetch_config(key, required, opts \\ []) do

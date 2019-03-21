@@ -8,6 +8,18 @@ defmodule SpringConfig.Loader.RemoteJsonLoader do
   @behaviour LoaderBehaviour
 
   @impl LoaderBehaviour
+  @spec load(keyword()) :: no_return()
+  @doc """
+   Loads configuration from a Spring Cloud Configuration Server.
+   It will make an HTTP GET request to a URL of the form `host/app_name/profile`.
+
+  Accepted options:
+  - `host`: The base url of the configuration server, e.g.: `http://locahost:9888/config-service`,
+  - `app_name`: The name of the application to look up, it corresponds to the name of YAML file in the git configuration repository,
+  - `profile`: The profile to use to filter the configuration. It will use spring.profiles to filter
+  and if it's not present, the document will be included,
+  - `ets_table`: The name of the ETS table to push the entries into.
+  """
   def load(opts) when is_list(opts) do
     request(opts) |> fetch_entries(opts) |> push_into_ets(opts)
   end

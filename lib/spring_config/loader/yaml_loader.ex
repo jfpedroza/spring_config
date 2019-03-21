@@ -8,6 +8,17 @@ defmodule SpringConfig.Loader.YamlLoader do
   @behaviour LoaderBehaviour
 
   @impl LoaderBehaviour
+  @spec load(keyword()) :: no_return()
+  @doc """
+  Loads configuration from a local Yaml file in the priv directory.
+
+  Accepted options:
+  - `app`: The OTP app that contains the YAML file,
+  - `path`: The path to the file inside the application. It should be in the priv directiory,
+  - `profile`: The profile to use to filter the configuration. It will use spring.profiles to filter
+  and if it's not present, the document will be included,
+  - `ets_table`: The name of the ETS table to push the entries into.
+  """
   def load(opts) when is_list(opts) do
     check_path(opts)
     |> read(opts)
