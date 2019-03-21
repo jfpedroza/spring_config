@@ -3,5 +3,8 @@ defmodule SpringConfig.Loader.LoaderBehaviour do
     Defines a behaviour for loading configuration from different sources
   """
 
-  @callback load(Keyword.t()) :: any
+  @doc """
+  Loads the configuration from a single source. The options accepted depend on each implementation of this behaviour.
+  """
+  @callback load(opts :: Keyword.t()) :: no_return()
 end

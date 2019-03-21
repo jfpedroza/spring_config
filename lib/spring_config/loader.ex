@@ -2,11 +2,17 @@ defmodule SpringConfig.Loader do
   @moduledoc """
     Loads the configuration from the ConfigServer
   """
-  alias SpringConfig.Loader.YamlLoader
   alias SpringConfig.Loader.RemoteJsonLoader
+  alias SpringConfig.Loader.YamlLoader
 
-  def load() do
-    :ets.new(:spring_config, [:set, :protected, :named_table])
+  @ets_table :spring_config
+
+  @spec load() :: :ok
+  @doc """
+  Loads the configuration from local and remote sources. Raises if an error occurs.
+  """
+  def load do
+    :ets.new(@ets_table, [:set, :protected, :named_table])
 
     otp_app = fetch_config(:otp_app, true, as: :atom)
     path = fetch_config(:path, false, default: "priv/application.yml")
@@ -22,7 +28,7 @@ defmodule SpringConfig.Loader do
       app: otp_app,
       path: path,
       profile: profile,
-      ets_table: :spring_config
+      ets_table: @ets_table
     )
 
     remote_uri_key =
@@ -35,10 +41,13 @@ defmodule SpringConfig.Loader do
       host: remote_uri,
       app_name: app_name,
       profile: profile,
-      ets_table: :spring_config
+      ets_table: @ets_table
     )
+
+    :ok
   end
 
+  @spec fetch_config(atom(), boolean(), Keyword.t()) :: any()
   defp fetch_config(key, required, opts \\ []) do
     value =
       case Application.fetch_env(:spring_config, key) do
@@ -52,22 +61,29 @@ defmodule SpringConfig.Loader do
           value
 
         :error ->
-          default = opts[:default]
-
-          cond do
-            required ->
-              raise "Missing required key #{key}"
-
-            is_function(default, 0) ->
-              default.()
-
-            true ->
-              default
-          end
+          get_default(key, required, opts)
       end
 
     convert(value, Keyword.get(opts, :as, :string))
   end
+
+  @spec get_default(atom(), boolean(), Keyword.t()) :: any()
+  defp get_default(key, required, opts) do
+    default = opts[:default]
+
+    cond do
+      required ->
+        raise "Missing required key #{key}"
+
+      is_function(default, 0) ->
+        default.()
+
+      true ->
+        default
+    end
+  end
+
+  @spec convert(any(), atom()) :: String.t() | atom() | number()
 
   defp convert(value, :string) do
     to_string(value)
