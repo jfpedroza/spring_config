@@ -2,8 +2,8 @@ defmodule SpringConfig.Loader do
   @moduledoc """
     Loads the configuration from the ConfigServer
   """
-  alias SpringConfig.Loader.YamlLoader
   alias SpringConfig.Loader.RemoteJsonLoader
+  alias SpringConfig.Loader.YamlLoader
 
   @ets_table :spring_config
 
@@ -11,7 +11,7 @@ defmodule SpringConfig.Loader do
   @doc """
   Loads the configuration from local and remote sources. Raises if an error occurs.
   """
-  def load() do
+  def load do
     :ets.new(@ets_table, [:set, :protected, :named_table])
 
     otp_app = fetch_config(:otp_app, true, as: :atom)
@@ -47,6 +47,7 @@ defmodule SpringConfig.Loader do
     :ok
   end
 
+  @spec fetch_config(atom(), boolean(), Keyword.t()) :: any()
   defp fetch_config(key, required, opts \\ []) do
     value =
       case Application.fetch_env(:spring_config, key) do
@@ -60,22 +61,29 @@ defmodule SpringConfig.Loader do
           value
 
         :error ->
-          default = opts[:default]
-
-          cond do
-            required ->
-              raise "Missing required key #{key}"
-
-            is_function(default, 0) ->
-              default.()
-
-            true ->
-              default
-          end
+          get_default(key, required, opts)
       end
 
     convert(value, Keyword.get(opts, :as, :string))
   end
+
+  @spec get_default(atom(), boolean(), Keyword.t()) :: any()
+  defp get_default(key, required, opts) do
+    default = opts[:default]
+
+    cond do
+      required ->
+        raise "Missing required key #{key}"
+
+      is_function(default, 0) ->
+        default.()
+
+      true ->
+        default
+    end
+  end
+
+  @spec convert(any(), atom()) :: String.t() | atom() | number()
 
   defp convert(value, :string) do
     to_string(value)

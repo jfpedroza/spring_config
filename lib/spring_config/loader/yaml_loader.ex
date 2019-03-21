@@ -20,7 +20,8 @@ defmodule SpringConfig.Loader.YamlLoader do
   - `ets_table`: The name of the ETS table to push the entries into.
   """
   def load(opts) when is_list(opts) do
-    check_path(opts)
+    opts
+    |> check_path()
     |> read(opts)
     |> filter_docs(opts)
     |> push_into_ets(opts)

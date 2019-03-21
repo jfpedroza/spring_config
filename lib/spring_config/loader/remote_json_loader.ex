@@ -21,7 +21,7 @@ defmodule SpringConfig.Loader.RemoteJsonLoader do
   - `ets_table`: The name of the ETS table to push the entries into.
   """
   def load(opts) when is_list(opts) do
-    request(opts) |> fetch_entries(opts) |> push_into_ets(opts)
+    opts |> request() |> fetch_entries(opts) |> push_into_ets(opts)
   end
 
   defp request(opts) do
