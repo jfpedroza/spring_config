@@ -15,7 +15,7 @@ defmodule SpringConfig.MixProject do
       package: package(),
       deps: deps(),
       docs: docs(),
-      source_url: "https://github.com/johnf9896/spring_config"
+      source_url: "https://github.com/jfpedroza/spring_config"
     ]
   end
 
@@ -56,7 +56,7 @@ defmodule SpringConfig.MixProject do
     [
       maintainers: ["Jhon Pedroza"],
       licenses: ["Apache 2.0"],
-      links: %{"GitHub" => "https://github.com/johnf9896/spring_config"}
+      links: %{"GitHub" => "https://github.com/jfpedroza/spring_config"}
     ]
   end
 end

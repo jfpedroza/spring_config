@@ -23,7 +23,7 @@ SpringConfig can be installed using Git:
 ```elixir
 def deps do
   [
-    {:spring_config, github: "johnf9896/spring_config"}
+    {:spring_config, github: "jfpedroza/spring_config"}
   ]
 end
 ```
